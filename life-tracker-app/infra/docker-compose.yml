@@ -1,0 +1,13 @@
+name: lifetracker
+
+services:
+  mongo:
+    image: mongo:8.0
+    ports:
+      # 27018 on the host to avoid clashing with other local MongoDB instances on 27017
+      - "127.0.0.1:27018:27017"
+    volumes:
+      - mongodata:/data/db
+
+volumes:
+  mongodata:
