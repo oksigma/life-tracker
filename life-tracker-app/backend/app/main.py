@@ -5,12 +5,14 @@ import httpx
 from fastapi import FastAPI, Request
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi.responses import JSONResponse
+from starlette.middleware.base import BaseHTTPMiddleware
 
 from app.api.router import api_router
 from app.core.config import settings
 from app.core.errors import NotFoundError
 from app.db.indexes import ensure_indexes
 from app.db.mongo import create_client
+from app.modules.auth.middleware import require_session
 from app.modules.food.openfoodfacts import OpenFoodFactsClient, RateLimiter
 from app.modules.movies.tmdb import TmdbClient
 
@@ -35,6 +37,8 @@ async def lifespan(app: FastAPI) -> AsyncIterator[None]:
 
 app = FastAPI(title="LifeTracker API", lifespan=lifespan)
 
+# Added before CORS so CORS stays outermost and 401 responses still carry CORS headers.
+app.add_middleware(BaseHTTPMiddleware, dispatch=require_session)
 app.add_middleware(
     CORSMiddleware,
     allow_origins=settings.cors_origins,

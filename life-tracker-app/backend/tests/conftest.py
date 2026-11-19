@@ -7,6 +7,8 @@ import pytest
 os.environ["MONGODB_DB"] = "lifetracker_test"
 # Never call the real TMDB from tests (it is faked where needed), even if .env has a key.
 os.environ["TMDB_API_KEY"] = ""
+# No login in tests unless a test turns it on (see test_auth.py).
+os.environ["APP_PASSWORD"] = ""
 
 from fastapi.testclient import TestClient  # noqa: E402
 from pymongo import MongoClient  # noqa: E402

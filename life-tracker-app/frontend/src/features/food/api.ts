@@ -1,4 +1,5 @@
 import { api } from "@/lib/api";
+import { prepareForUpload } from "@/lib/photos";
 import type { FoodLookup, Meal, MealItemInput, MealList, MealType, MealUpdate, SavedFood } from "@/types/food";
 
 const BASE = "/api/food";
@@ -11,7 +12,7 @@ export function getMeal(id: string): Promise<Meal> {
   return api<Meal>(`${BASE}/meals/${encodeURIComponent(id)}`);
 }
 
-export function createMeal(input: {
+export async function createMeal(input: {
   photo: File | null;
   eatenOn: string;
   mealType: MealType;
@@ -19,7 +20,7 @@ export function createMeal(input: {
   items: MealItemInput[];
 }): Promise<Meal> {
   const form = new FormData();
-  if (input.photo) form.append("photo", input.photo);
+  if (input.photo) form.append("photo", await prepareForUpload(input.photo));
   form.append("eaten_on", input.eatenOn);
   form.append("meal_type", input.mealType);
   if (input.notes) form.append("notes", input.notes);

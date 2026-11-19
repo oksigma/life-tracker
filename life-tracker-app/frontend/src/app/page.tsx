@@ -1,10 +1,14 @@
 import Link from "next/link";
+import { SignOutButton } from "@/features/auth/SignOutButton";
 import { LIFE_AREAS } from "@/types/life-area";
 
 export default function Home() {
   return (
     <main className="mx-auto max-w-3xl px-4 py-10">
-      <h1 className="text-3xl font-semibold">LifeTracker</h1>
+      <div className="flex items-center justify-between gap-4">
+        <h1 className="text-3xl font-semibold">LifeTracker</h1>
+        <SignOutButton />
+      </div>
       <Link
         href="/calendar"
         className="mt-6 flex items-center justify-between rounded-lg border border-slate-200 bg-white px-4 py-3 hover:border-slate-400"

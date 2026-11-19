@@ -38,7 +38,8 @@ Life areas tracked:
 | Movie details | TMDB API (`TMDB_API_KEY` in `.env`; optional — off when empty) |
 | Food calorie data | Open Food Facts (search-a-licious, legacy search fallback) via httpx; no AI |
 | Image processing | Pillow + pillow-heif (HEIC); all uploads re-encoded as JPEG with metadata stripped |
-| Authentication | None while local-only; _TODO: simple single-user login before deploying_ |
+| Authentication | Single app password (`APP_PASSWORD`, spec 0006): signed HttpOnly cookie, 90 days; off when empty |
+| Hosting | Vercel (frontend + FastAPI as Python function) and MongoDB Atlas (ADR 0004) |
 | Backend tests | pytest |
 | Frontend tests | _TODO: e.g. Vitest + React Testing Library_ |
 | End-to-end tests | _TODO: e.g. Playwright_ |
@@ -87,8 +88,7 @@ Life areas tracked:
 
 ## Authentication and authorization
 - Single user, so no accounts, roles or per-user data scoping.
-- While running locally only, there is no login.
-- **Before deploying anywhere reachable from the internet**, add a single-user login (e.g. one password or a passkey). _TODO: choose approach when deploying._
+- One app password (spec 0006). With `APP_PASSWORD` empty (local) there is no login; when set, every `/api` route except `/api/health` and `/api/auth/*` needs the session cookie. **Always set it when deployed.**
 
 ## Frontend conventions
 - Organize by life area: `src/features/<area>/`; pages in `src/app/` stay thin.
@@ -125,7 +125,9 @@ Life areas tracked:
 - _TODO: Branch naming, commit message style, PRs or straight to `main`_
 
 ## Deployment and environments
-- _TODO: Hosting for frontend, backend and MongoDB (e.g. Vercel + Render + MongoDB Atlas)_
+- Vercel + MongoDB Atlas (ADR 0004). Step-by-step setup: `../docs/architecture/deployment.md`.
+- Two Vercel projects from `oksigma/life-tracker`: frontend (root `life-tracker-app/frontend`) and backend (root `life-tracker-app/backend`, entrypoint in `pyproject.toml`). The frontend proxies `/api/*` to `BACKEND_URL`.
+- Vercel limits request bodies to 4.5 MB, so the browser shrinks larger photos before upload (`lib/photos.ts`).
 
 ## Known issues and gotchas
 - _TODO: Add as you find them_

@@ -1,4 +1,6 @@
-const API_URL = process.env.NEXT_PUBLIC_API_URL ?? "http://localhost:8000";
+// Empty by default: requests go to /api on this site and Next.js forwards them to the backend
+// (see next.config.mjs). Set NEXT_PUBLIC_API_URL only to call a backend directly.
+const API_URL = process.env.NEXT_PUBLIC_API_URL ?? "";
 
 /** Absolute URL for a backend path, e.g. for <img src>. */
 export function apiUrl(path: string): string {
@@ -43,10 +45,19 @@ export async function api<T>(path: string, init?: RequestInit): Promise<T> {
   } catch {
     throw new ApiError(0, "Can't reach the server. Is the backend running?");
   }
+  if (res.status === 401 && !path.startsWith("/api/auth/")) redirectToLogin();
   if (res.status === 204) return undefined as T;
   const body: unknown = await res.json().catch(() => null);
   if (!res.ok) throw new ApiError(res.status, describeError(res.status, body));
   return body as T;
+}
+
+/** Send the browser to the login page, coming back to the current page afterwards. */
+export function redirectToLogin(): void {
+  if (typeof window === "undefined" || window.location.pathname === "/login") return;
+  const next = window.location.pathname + window.location.search;
+  // eslint-disable-next-line @next/next/no-location-assign-relative-destination -- full reload clears signed-in state
+  window.location.assign(`/login?next=${encodeURIComponent(next)}`);
 }
 
 export function errorMessage(error: unknown): string {

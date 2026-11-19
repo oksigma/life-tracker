@@ -19,3 +19,4 @@ Start from [`_template.md`](_template.md), or run `/new-spec` in Claude Code.
 | 0003 | [Calendar — see which days I logged things](0003-calendar.md) | cross-cutting | In progress |
 | 0004 | [Food — log meals with a photo and estimated calories](0004-food-meals-calories.md) | food | In progress |
 | 0005 | [Movies — add details from TMDB](0005-movie-details-tmdb.md) | movies | In progress |
+| 0006 | [App password (single-user login)](0006-app-password.md) | cross-cutting | In progress |

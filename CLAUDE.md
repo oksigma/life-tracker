@@ -7,7 +7,8 @@ Product vision and goals: `docs/product/vision.md`. Roadmap: `docs/product/roadm
 
 ## Current status
 - **Phase:** 0 — Foundation (scaffold in place, no features built yet)
-- **Active specs:** 0001 Movies, 0002 Clothing, 0003 Calendar, 0004 Food, 0005 Movie details (all built; awaiting manual browser check; 0005 needs a TMDB key)
+- **Active specs:** 0001 Movies, 0002 Clothing, 0003 Calendar, 0004 Food, 0005 Movie details, 0006 App password (all built; awaiting manual browser check; 0005 needs a TMDB key)
+- **Deployment:** code on GitHub at `oksigma/life-tracker`; Vercel + Atlas setup in `docs/architecture/deployment.md`
 - **Next up:** Health (weight, sleep, symptoms) and Exercise
 
 ## Tech stack
@@ -17,6 +18,7 @@ Product vision and goals: `docs/product/vision.md`. Roadmap: `docs/product/roadm
 | Backend | Python 3.12, FastAPI, served by Uvicorn (managed with uv) |
 | Database | MongoDB (local via Docker) |
 | Testing | pytest (backend), e2e in `life-tracker-app/tests/e2e/` |
+| Hosting | Vercel (frontend + backend) and MongoDB Atlas — ADR 0004 |
 
 Full details in `life-tracker-app/CLAUDE.md`.
 
@@ -61,7 +63,7 @@ Each area also needs registering on the calendar (spec 0003): backend `CalendarS
 
 ## Privacy and security
 This app stores personal data, including health information.
-- Single-user app: no accounts. Add a login before it is ever deployed publicly.
+- Single-user app: no accounts. One app password (`APP_PASSWORD`, spec 0006) protects the deployed app.
 - Never log personal entry content (health details, notes).
 - Never commit secrets; config comes from `.env` (see `.env.example`).
 - Don't add third-party analytics or integrations without a decision record.

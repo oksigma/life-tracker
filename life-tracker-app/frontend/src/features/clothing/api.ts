@@ -1,4 +1,5 @@
 import { api } from "@/lib/api";
+import { prepareForUpload } from "@/lib/photos";
 import type { Outfit, OutfitList, OutfitUpdate } from "@/types/outfit";
 
 const BASE = "/api/clothing/outfits";
@@ -11,9 +12,9 @@ export function getOutfit(id: string): Promise<Outfit> {
   return api<Outfit>(`${BASE}/${encodeURIComponent(id)}`);
 }
 
-export function uploadOutfit(photo: File, wornOn: string, notes: string | null): Promise<Outfit> {
+export async function uploadOutfit(photo: File, wornOn: string, notes: string | null): Promise<Outfit> {
   const form = new FormData();
-  form.append("photo", photo);
+  form.append("photo", await prepareForUpload(photo));
   form.append("worn_on", wornOn);
   if (notes) form.append("notes", notes);
   return api<Outfit>(BASE, { method: "POST", body: form });
